@@ -1,11 +1,30 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import nameChangerReducer from './name_changer/nameChangerSlice';
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-// Example slice (you can add your own slices here)
-const store = configureStore({
-  reducer: {
-    nameChanger: nameChangerReducer,
-  },
+const persistConfig = {
+  key: "root",
+  storage,
+};
+
+
+const rootReducer = combineReducers({
+  nameChanger: nameChangerReducer, 
 });
 
-export default store;
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer:persistedReducer,
+  devTools: process.env.NODE_ENV !== "production",
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);

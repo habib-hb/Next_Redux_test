@@ -18,11 +18,12 @@ export default function TestingNames() {
     };
   }
 
-  const name = useSelector((state: RootState) => state.nameChanger.name);
+  const name = useSelector((state: RootState) => state.nameChanger?.name);
 
-  const notification = useSelector((state: RootState) => state.nameChanger.notification);
+  const notification = useSelector((state: RootState) => state.nameChanger?.notification);
 
   const dispatch = useDispatch();
+
 
   useEffect(() => {
 
@@ -31,9 +32,12 @@ export default function TestingNames() {
         dispatch(clear_notification());
       } , 1000);
 
-      return () => clearTimeout(timeout);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
       
+
   }, [ notification ]);
 
     return (
